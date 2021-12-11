@@ -1,6 +1,6 @@
 FROM amazonlinux:2
 
-ARG GO_GILE=go1.17.5.linux-amd64.tar.gz
+ARG GO_FILE=go1.17.5.linux-amd64.tar.gz
 ARG SRC_MODULE=github.com/mkaiho/go-todo-sample
 
 ENV GOPATH /go
@@ -11,9 +11,9 @@ RUN yum update -y && yum install -y \
 
 RUN useradd "ec2-user" && echo "ec2-user ALL=NOPASSWD: ALL" >> /etc/sudoers
 
-RUN curl -OL https://golang.org/dl/${GO_GILE} \
-  && tar -C /usr/local -xzf ${GO_GILE} \
-  && rm ${GO_GILE}
+RUN curl -OL https://golang.org/dl/${GO_FILE} \
+  && tar -C /usr/local -xzf ${GO_FILE} \
+  && rm ${GO_FILE}
 
 RUN mkdir -p $GOPATH/src/$SRC_MODULE && chmod -R 777 $GOPATH
 
