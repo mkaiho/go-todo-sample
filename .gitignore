@@ -19,3 +19,6 @@ docker/mysql/data
 
 # SSH keys
 .ssh/
+
+# Build Binaries
+bin/
