@@ -42,9 +42,9 @@ workflows:
   build_and_test:
     jobs:
       - setup-repo
-      - test
+      - test:
           requires:
             - setup-repo
-      - build
+      - build:
           requires:
             - test
