@@ -10,6 +10,11 @@ jobs:
       name: go/default
       tag: '1.17'
     steps:
+      - run:
+          name: pwd
+          command: |
+            pwd
+            ls
       - checkout
       - go/load-cache
       - go/mod-download
