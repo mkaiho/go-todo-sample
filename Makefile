@@ -11,7 +11,7 @@ $(BINARIES): $(GO_FILES)
 
 .PHONY: deps
 deps:
-	go get ./...
+	go mod download
 
 .PHONY: test
 test:
