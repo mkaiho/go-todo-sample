@@ -28,6 +28,11 @@ jobs:
       tag: '1.17'
     steps:
       - run:
+          name: pwd
+          command: |
+            pwd
+            ls
+      - run:
           name: Run tests
           command: |
             mkdir -p /tmp/test-reports
