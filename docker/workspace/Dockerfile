@@ -1,6 +1,6 @@
 FROM amazonlinux:2
 
-ARG GO_GILE=go1.17.1.linux-amd64.tar.gz
+ARG GO_GILE=go1.17.5.linux-amd64.tar.gz
 ARG SRC_MODULE=github.com/mkaiho/go-todo-sample
 
 ENV GOPATH /go
