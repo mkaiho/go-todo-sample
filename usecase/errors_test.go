@@ -203,3 +203,51 @@ func Test_useCaseError_IsCodeEqualTo(t *testing.T) {
 		})
 	}
 }
+
+func Test_errorCode_IsEqualCodeInError(t *testing.T) {
+	type args struct {
+		err error
+	}
+	tests := []struct {
+		name string
+		ec   errorCode
+		args args
+		want bool
+	}{
+		{
+			name: "Return true when error interface match UseCaseError and code is equal",
+			ec:   999,
+			args: args{
+				err: &useCaseError{
+					code: 999,
+				},
+			},
+			want: true,
+		},
+		{
+			name: "Return false when error is not match UseCaseError interface",
+			ec:   999,
+			args: args{
+				err: errors.New("dummy"),
+			},
+			want: false,
+		},
+		{
+			name: "Return false when error code is not equal",
+			ec:   999,
+			args: args{
+				err: &useCaseError{
+					code: 1,
+				},
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.ec.IsEqualCodeInError(tt.args.err); got != tt.want {
+				t.Errorf("errorCode.IsEqualCodeInError() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

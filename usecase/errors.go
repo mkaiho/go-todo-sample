@@ -10,6 +10,11 @@ const (
 	ErrCodeUnkown
 )
 
+func (ec errorCode) IsEqualCodeInError(err error) bool {
+	target, ok := err.(UseCaseError)
+	return ok && target.Code() == ec
+}
+
 type UseCaseError interface {
 	Code() errorCode
 	Error() string
