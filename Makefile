@@ -19,6 +19,11 @@ dev-deps:
 deps:
 	go mod download
 
+.PHONY: gen-mock
+gen-mock:
+	make dev-deps
+	mockery --all --inpackage --case underscore
+
 .PHONY: test
 test:
 	gotestsum
