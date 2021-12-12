@@ -448,3 +448,35 @@ func Test_userName_String(t *testing.T) {
 		})
 	}
 }
+
+func TestUsers_IsEmpty(t *testing.T) {
+	tests := []struct {
+		name string
+		u    Users
+		want bool
+	}{
+		{
+			name: "Return false when users length is 1",
+			u: Users{
+				&MockUser{},
+			},
+			want: false,
+		},
+		{
+			name: "Return true when users length is 0",
+			u:    Users{},
+			want: true,
+		},
+		{
+			name: "Return true when users is nil",
+			u:    nil,
+			want: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.u.IsEmpty()
+			assert.Equal(t, tt.want, got, "Users.IsEmpty() = %v, want %v", got, tt.want)
+		})
+	}
+}

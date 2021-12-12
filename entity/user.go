@@ -75,7 +75,7 @@ func (em email) Validate() error {
 	return nil
 }
 
-/** UserID**/
+/** User **/
 
 type User interface {
 	UserID() UserID
@@ -119,4 +119,12 @@ func (u *user) Name() UserName {
 
 func (u *user) Email() Email {
 	return u.email
+}
+
+/** Users **/
+
+type Users []User
+
+func (u Users) IsEmpty() bool {
+	return len(u) == 0
 }
