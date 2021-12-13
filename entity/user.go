@@ -12,6 +12,10 @@ const (
 )
 
 /** UserID**/
+func ParseUserID(value string) (UserID, error) {
+	return ParseID(value)
+}
+
 type UserID interface {
 	IsEmpty() bool
 	Validate() error
@@ -92,21 +96,12 @@ func NewUser(
 	id UserID,
 	name UserName,
 	email Email,
-) (User, error) {
-	if err := id.Validate(); !id.IsEmpty() && err != nil {
-		return nil, err
-	}
-	if err := name.Validate(); err != nil {
-		return nil, err
-	}
-	if err := email.Validate(); err != nil {
-		return nil, err
-	}
+) User {
 	return &user{
 		id:    id,
 		name:  name,
 		email: email,
-	}, nil
+	}
 }
 
 func (u *user) UserID() UserID {

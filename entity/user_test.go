@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -152,95 +151,11 @@ func TestNewUser(t *testing.T) {
 			},
 			wantErr: assert.NoError,
 		},
-		{
-			name: "Return User when user id is empty",
-			args: args{
-				name:  userName("testuser"),
-				email: email("xxx.yyy@zzz.com"),
-			},
-			mocks: mocks{
-				UserID: func() UserID {
-					m := new(MockUserID)
-					m.On("IsEmpty").Return(true)
-					m.On("Validate").Return(errors.New("dummy error"))
-					m.On("String").Return("")
-					return m
-				}(),
-			},
-			want: &user{
-				name:  userName("testuser"),
-				email: email("xxx.yyy@zzz.com"),
-			},
-			wantErr: assert.NoError,
-		},
-		{
-			name: "Return error when user id is invalid",
-			args: args{
-				name:  userName("testuser"),
-				email: email("xxx.yyy@zzz.com"),
-			},
-			mocks: mocks{
-				UserID: func() UserID {
-					m := new(MockUserID)
-					m.On("IsEmpty").Return(false)
-					m.On("Validate").Return(errors.New("dummy error"))
-					m.On("String").Return("")
-					return m
-				}(),
-			},
-			want: nil,
-			wantErr: func(tt assert.TestingT, e error, i ...interface{}) bool {
-				return assert.EqualError(tt, e, "dummy error")
-			},
-		},
-		{
-			name: "Return error when user name is invalid",
-			args: args{
-				name:  userName(""),
-				email: email("xxx.yyy@zzz.com"),
-			},
-			mocks: mocks{
-				UserID: func() UserID {
-					m := new(MockUserID)
-					m.On("IsEmpty").Return(false)
-					m.On("Validate").Return(nil)
-					m.On("String").Return("id_xxxxx")
-					return m
-				}(),
-			},
-			want: nil,
-			wantErr: func(tt assert.TestingT, e error, i ...interface{}) bool {
-				return assert.EqualError(tt, e, "invalid user name")
-			},
-		},
-		{
-			name: "Return error when email format is invalid",
-			args: args{
-				name:  userName("testuser"),
-				email: email("xxx.invalid"),
-			},
-			mocks: mocks{
-				UserID: func() UserID {
-					m := new(MockUserID)
-					m.On("IsEmpty").Return(false)
-					m.On("Validate").Return(nil)
-					m.On("String").Return("id_xxxxx")
-					return m
-				}(),
-			},
-			want: nil,
-			wantErr: func(tt assert.TestingT, e error, i ...interface{}) bool {
-				return assert.EqualError(tt, e, "email format is invalid: \"xxx.invalid\"")
-			},
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			id := tt.mocks.UserID
-			got, err := NewUser(id, tt.args.name, tt.args.email)
-			if !tt.wantErr(t, err) {
-				return
-			}
+			got := NewUser(id, tt.args.name, tt.args.email)
 			if tt.want == nil && assert.Nil(t, got) {
 				return
 			}
@@ -477,6 +392,47 @@ func TestUsers_IsEmpty(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got := tt.u.IsEmpty()
 			assert.Equal(t, tt.want, got, "Users.IsEmpty() = %v, want %v", got, tt.want)
+		})
+	}
+}
+
+func TestParseUserID(t *testing.T) {
+	type args struct {
+		value string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    UserID
+		wantErr assert.ErrorAssertionFunc
+	}{
+		{
+			name: "Return UserID when value is valid",
+			args: args{
+				value: "a24e61a9-6ff2-c3bf-4dc8-02ee1491ce1c",
+			},
+			want:    ID("a24e61a9-6ff2-c3bf-4dc8-02ee1491ce1c"),
+			wantErr: assert.NoError,
+		},
+		{
+			name: "Return UserID when value is valid",
+			args: args{
+				value: "dummy_id",
+			},
+			want: ID(""),
+			wantErr: func(tt assert.TestingT, e error, i ...interface{}) bool {
+				want := "id format is invalid: \"dummy_id\""
+				return assert.EqualError(tt, e, want, "ParseUserID() error = %v, wantErr %v", e, want)
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := ParseUserID(tt.args.value)
+			if !tt.wantErr(t, err) {
+				return
+			}
+			assert.Equal(t, tt.want, got, "ParseUserID() = %v, want %v", got, tt.want)
 		})
 	}
 }
